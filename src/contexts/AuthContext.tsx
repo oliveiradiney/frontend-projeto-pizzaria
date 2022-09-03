@@ -1,5 +1,9 @@
 import { createContext, ReactNode, useState } from "react";
-import { destroyCookie } from 'nookies';
+
+import { api } from '../services/apiClient';
+
+
+import { destroyCookie, setCookie, parseCookies } from 'nookies';
 import Router from 'next/router'
 
 type AuthContextData = {
@@ -40,8 +44,34 @@ export function AuthProvider({children}: AuthProviderProps){
     const isAuthenticated = !!user;
 
     async function signIn({email, password}: SignInProps){
-        console.log("Dados ", email)
-        console.log("Dados ", password)
+      try {
+        const response = await api.post('/session', {
+            email,
+            password
+        })  
+
+        const {id, name, token} = response.data;
+        setCookie(undefined, '@nextauth.token', token, {
+            maxAge:60 * 60 * 24 * 30,//expirar em 1 mes
+            path: '/' //quais caminhos terao acesso ao cookie
+        })
+
+        setUser({
+            id,
+            name,
+            email,
+        })
+
+        //passar para proximas requisicoes o nosso token
+        api.defaults.headers['Authorization'] = `Bearer ${token}`
+
+        //redirecionar o user para /dashboard
+        Router.push('/dashboard')
+
+        //console.log(response.data)
+      } catch (err) {
+        console.log('Erro ao acessar', err)
+      }
     }
 
 
