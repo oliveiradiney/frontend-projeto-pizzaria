@@ -52,6 +52,7 @@ export function AuthProvider({children}: AuthProviderProps){
     const [user, setUser] = useState<UserProps>()
     const isAuthenticated = !!user;
 
+    //Fazer login
     async function signIn({email, password}: SignInProps){
       try {
         const response = await api.post('/session', {
@@ -87,7 +88,7 @@ export function AuthProvider({children}: AuthProviderProps){
         
       }
     }
-
+    //Cadastrar usuario
     async function signUp({ name, email, password}: SignUpProps){
         try {
             const response = await api.post('/users', {
