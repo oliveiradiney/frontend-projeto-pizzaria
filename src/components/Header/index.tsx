@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { FiLogOut} from 'react-icons/fi';
 
 import { AuthContext } from '../../contexts/AuthContext';
-
+import Image from 'next/image';
 
 
 export function Header(){
@@ -15,17 +15,16 @@ export function Header(){
         <header className={styles.headerContainer}>
             <div className={styles.headerContent}>
                 <Link href='/dashboard'>  
-                    <img src='/Logo.svg' width={190} height={60} />
+                    <Image src='/Pizza_Hut_logo.svg' width={190} height={60} alt='Logo sujeito pizza'/>
                 </Link>
-
-   clear
+                
                 <nav className={styles.menuNav}>
                     <Link href='/category'>
                         <a>Categoria</a>
                     </Link>
 
                     <Link href='/product'>
-                        <a>Cardapio</a>
+                        <a>Cardápio</a>
                     </Link>
 
                     <button onClick={signOut}>
