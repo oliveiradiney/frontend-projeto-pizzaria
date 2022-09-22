@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../../styles/home.module.scss'
 
-import logoImg from '../../public/Pizza_Hut_logo.svg'
+import logoImg from '../../public/Logo.svg'
 
 import { Input } from '../components/ui/Input'
 import { Button } from '../components/ui/Button';
@@ -51,7 +51,7 @@ export default function Home() {
         <title>SujeitoPizza - Faça seu login</title>
       </Head>
       <div className={styles.containerCenter}>
-        <Image src={logoImg} width={150} height={150} alt="Logo Pizza"  />
+        <Image src={logoImg} alt="Logo Pizza"  />
 
         <div className={styles.login}>
           <form onSubmit={handleLogin}>
