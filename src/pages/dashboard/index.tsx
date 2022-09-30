@@ -5,45 +5,51 @@ import styles from './styles.module.scss';
 
 import { Header } from "../../components/Header"
 import { FiRefreshCcw } from 'react-icons/fi'
+import { setupAPIClient } from "../../services/api";
 
 export default function Dashboard(){
     return(
         <>
             <Head>
-            <title>Painel - Sujeito Pizzaria</title>
-        </Head>
-        <div>
-            <Header />
-            
-            <main className={styles.container}>
+                <title>Painel - Sujeito Pizzaria</title>
+            </Head>
+            <div>
+                <Header />
 
-                <div className={styles.containerHeader}>
-                    <h1>Últimos pedidos</h1>
-                    <button>
-                        <FiRefreshCcw color="#3fffa3"/>
-                    </button>
-                </div>
+                <main className={styles.container}>
 
-                <article className={styles.listOrder}>
-
-                    <section className={styles.orderItem}>
+                    <div className={styles.containerHeader}>
+                        <h1>Últimos pedidos</h1>
                         <button>
-                            <div className={styles.tag}></div>
-                            <span>Mesa 30</span>
+                            <FiRefreshCcw color="#3fffa3" />
                         </button>
-                    </section>
+                    </div>
+
+                    <article className={styles.listOrder}>
+
+                        <section className={styles.orderItem}>
+                            <button>
+                                <div className={styles.tag}></div>
+                                <span>Mesa 30</span>
+                            </button>
+                        </section>
 
 
-                </article>
+                    </article>
 
-            </main>
+                </main>
 
-        </div>
+            </div>
         </>
     )
 }
 
 export const getServerSideProps = canSSRAuth(async (ctx) => { 
+    const apiClient = setupAPIClient(ctx);
+
+    const response = await apiClient.get('/orders')
+    console.log(response.data)
+
     return{
         props:{}
     }
