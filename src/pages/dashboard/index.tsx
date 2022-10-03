@@ -9,6 +9,9 @@ import { Header } from "../../components/Header"
 import { FiRefreshCcw } from 'react-icons/fi'
 import { setupAPIClient } from "../../services/api";
 
+import { ModalOrder } from "../../components/ModalOrder";
+
+import Modal from 'react-modal';
 
 type OrderProps = {
     id: string;
@@ -18,18 +21,56 @@ type OrderProps = {
     name: string | null;
 }
 
+export type OrderItemProps = {
+    id:string;
+    amount: number;
+    order_id: string;
+    product_id: string;
+    product:{
+        id:string;
+        name:string;
+        description:string;
+        price:string;
+        banner:string;
+    }
+    order:{
+        id:string;
+        table:string|number;
+        status: boolean;
+        name: string | null;
+    }
+}
+
 interface HomeProps{
     orders: OrderProps[];
 }
 
+
+
 export default function Dashboard({orders}: HomeProps){
 
     const [orderList, setOrderList] = useState(orders || [])//array vazio caso não tenha nenhum pedido
+    const [modalItem, setModalItem] = useState<OrderItemProps[]>()
+    const [modalVisible, setModalVisible] = useState(false)
 
+    function handleCloseModal(){
+        setModalVisible(false);
+    } 
 
-    function handleOpenModalView(id: string){
-        alert("ID CLICADO " +id)
+    async function handleOpenModalView(id: string){
+        const apiClient = setupAPIClient();
+        
+        const response = await apiClient.get('/order/detail',{
+            params:{
+                order_id: id
+            }
+        })
+
+        setModalItem(response.data);
+        setModalVisible(true);
     }
+
+    Modal.setAppElement('#__next');
 
     return(
         <>
@@ -65,6 +106,9 @@ export default function Dashboard({orders}: HomeProps){
                     </article>
 
                 </main>
+                { modalVisible && (
+                    <ModalOrder />
+                )}
 
             </div>
         </>
@@ -75,8 +119,7 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
     const apiClient = setupAPIClient(ctx);
 
     const response = await apiClient.get('/orders')
-    console.log(response.data)
-
+    
     return{
         props:{
             orders: response.data
