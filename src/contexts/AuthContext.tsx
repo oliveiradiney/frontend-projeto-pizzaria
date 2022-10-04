@@ -96,7 +96,7 @@ export function AuthProvider({children}: AuthProviderProps){
         //passar para proximas requisicoes o nosso token
         api.defaults.headers['Authorization'] = `Bearer ${token}`
         
-        toast.success("Logado com sucesso")
+        toast.success("Logado com sucesso!")
 
 
         //redirecionar o user para /dashboard
