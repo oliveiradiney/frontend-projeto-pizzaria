@@ -21,6 +21,9 @@ type OrderProps = {
     name: string | null;
 }
 
+
+
+
 export type OrderItemProps = {
     id:string;
     amount: number;
@@ -33,9 +36,9 @@ export type OrderItemProps = {
         price:string;
         banner:string;
     }
-    order:{
-        id:string;
-        table:string|number;
+    orders:{
+        id: string;
+        table: string | number;
         status: boolean;
         name: string | null;
     }
@@ -46,12 +49,11 @@ interface HomeProps{
 }
 
 
-
 export default function Dashboard({orders}: HomeProps){
 
-    const [orderList, setOrderList] = useState(orders || [])//array vazio caso não tenha nenhum pedido
-    const [modalItem, setModalItem] = useState<OrderItemProps[]>()
-    const [modalVisible, setModalVisible] = useState(false)
+    const [orderList, setOrderList] = useState(orders || []);//array vazio caso não tenha nenhum pedido
+    const [modalItem, setModalItem] = useState<OrderItemProps[]>();
+    const [modalVisible, setModalVisible] = useState(false);
 
     function handleCloseModal(){
         setModalVisible(false);
@@ -60,9 +62,9 @@ export default function Dashboard({orders}: HomeProps){
     async function handleOpenModalView(id: string){
         const apiClient = setupAPIClient();
         
-        const response = await apiClient.get('/order/detail',{
+        const response = await apiClient.get('/order/detail', {
             params:{
-                order_id: id
+                order_id: id,
             }
         })
 
@@ -95,19 +97,29 @@ export default function Dashboard({orders}: HomeProps){
                         3- send order
                     */}
                     <article className={styles.listOrder}>
-                        {orderList.map( item => (
-                            <section key={item.id} className={styles.orderItem}>
-                                <button onClick={ () => handleOpenModalView(item.id)}>
-                                    <div className={styles.tag}></div>
-                                    <span>Mesa {item.table}</span>
-                                </button>
-                            </section>
-                        ))}
+
+                        {orderList.map( item => {
+                            return(
+                                <section key={item.id} className={styles.orderItem}>
+                                    <button 
+                                        onClick={() => handleOpenModalView(item.id) }>
+                                        <div className={styles.tag}></div>
+                                        <span>Mesa {item.table}</span>
+                                    </button>
+                                </section>
+                            );
+                        })};
+
                     </article>
 
                 </main>
+
                 { modalVisible && (
-                    <ModalOrder />
+                    <ModalOrder 
+                        isOpen={modalVisible}
+                        onRequestClose={handleCloseModal}
+                        order={modalItem}
+                    />
                 )}
 
             </div>
@@ -118,7 +130,7 @@ export default function Dashboard({orders}: HomeProps){
 export const getServerSideProps = canSSRAuth(async (ctx) => { 
     const apiClient = setupAPIClient(ctx);
 
-    const response = await apiClient.get('/orders')
+    const response = await apiClient.get('/orders');
     
     return{
         props:{
